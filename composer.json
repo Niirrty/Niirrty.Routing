@@ -1,0 +1,20 @@
+{
+   "name": "niirrty/niirrty.routing",
+   "type": "library",
+   "description": "A PHP routing library.",
+   "license": "MIT",
+   "authors": [
+      {
+         "name": "Ni Irrty",
+         "email": "niirrty+code@gmail.com"
+      }
+   ],
+   "require": {
+      "php": ">=7.1"
+   },
+   "autoload": {
+      "psr-4": {
+         "Niirrty\\Routing\\": "src/"
+      }
+   }
+}
