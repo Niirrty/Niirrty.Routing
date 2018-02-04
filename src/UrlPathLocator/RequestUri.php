@@ -29,5 +29,24 @@ class RequestUri extends ArraySource
    // </editor-fold>
 
 
+   // <editor-fold desc="// – – –   P R O T E C T E D   M E T H O D S   – – – – – – – – – – – – – – – – – – – – –">
+
+   /**
+    * Must be implemented  by a extending locator.
+    *
+    * @return string
+    */
+   protected function findPath() : string
+   {
+
+      $tmp = \explode( '?', parent::findPath(), 2 );
+
+      return $tmp[ 0 ];
+
+   }
+
+   // </editor-fold>
+
+
 }
 
