@@ -1,7 +1,14 @@
 <?php
+/**
+ * @author     Ni Irrty <niirrty+code@gmail.com>
+ * @copyright  © 2017-2020, Ni Irrty
+ * @package    Niirrty\Routing\Redirection
+ * @since      2017-11-04
+ * @version    0.3.0
+ */
 
 
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 
 namespace Niirrty\Routing\Redirection;
@@ -18,22 +25,25 @@ use Niirrty\Routing\UrlPathLocator\ILocator;
 interface IRedirection
 {
 
-   /**
-    * Calls the redirection with defined URL path locator URL.
-    *
-    * If the redirection matches the declared URL path the script is finished after this method call.
-    *
-    * @param \Niirrty\Routing\UrlPathLocator\ILocator $locator
-    */
-   public function call( ILocator $locator );
 
-   /**
-    * Returns if the redirection matches the URL from defined locator.
-    *
-    * @param \Niirrty\Routing\UrlPathLocator\ILocator $locator
-    * @return bool
-    */
-   public function matches( ILocator $locator ) : bool;
+    /**
+     * Calls the redirection with defined URL path locator URL.
+     *
+     * If the redirection matches the declared URL path the script is finished after this method call.
+     *
+     * @param ILocator $locator
+     */
+    public function call( ILocator $locator );
+
+    /**
+     * Returns if the redirection matches the URL from defined locator.
+     *
+     * @param ILocator $locator
+     *
+     * @return bool
+     */
+    public function matches( ILocator $locator ): bool;
+
 
 }
 
