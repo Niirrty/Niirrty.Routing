@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2020, Ni Irrty
+ * @copyright  © 2017-2021, Ni Irrty
  * @package    Niirrty\Routing\UrlPathLocator
  * @since      2017-11-04
- * @version    0.3.0
+ * @version    0.4.0
  */
 
 
@@ -14,12 +14,6 @@ declare( strict_types=1 );
 namespace Niirrty\Routing\UrlPathLocator;
 
 
-use function explode;
-use function preg_replace;
-use function trim;
-use function urldecode;
-
-
 /**
  * Defines a abstract URL path locator with all base functionality.
  */
@@ -27,23 +21,22 @@ abstract class Locator implements ILocator
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * The URL path string
      *
      * @type string
      */
-    protected $_path;
+    protected string $_path;
 
     /** @type array */
-    protected $_pathParts;
+    protected array $_pathParts;
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   C O N S T R U C T O R   – – – – – – – – – – – – – – – – –">
+    #region // – – –   P R O T E C T E D   C O N S T R U C T O R   – – – – – – – – – – – – – – – – –
 
     /**
      * Locator constructor.
@@ -52,17 +45,17 @@ abstract class Locator implements ILocator
     {
 
         $this->_path = $this->cleanPath( $this->findPath() );
-        $this->_pathParts = '/' === $this->_path ? [] : explode( '/', trim( $this->_path, '/' ) );
+        $this->_pathParts = '/' === $this->_path ? [] : \explode( '/', \trim( $this->_path, '/' ) );
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   M E T H O D S   – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P R O T E C T E D   M E T H O D S   – – – – – – – – – – – – – – – – – – – – –
 
     /**
-     * Must be implemented  by a extending locator.
+     * Must be implemented by a extending locator.
      *
      * @return string
      */
@@ -71,14 +64,14 @@ abstract class Locator implements ILocator
     protected function cleanPath( string $path ): string
     {
 
-        return preg_replace( '~[^A-Za-z0-9/ _.:,;!$)(\]\[-]+~', '_', urldecode( $path ) );
+        return \preg_replace( '~[^A-Za-z0-9/ _.:,;!$)(\]\[-]+~', '_', \urldecode( $path ) );
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Gets the URL path that should be used for routing.
@@ -104,8 +97,7 @@ abstract class Locator implements ILocator
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

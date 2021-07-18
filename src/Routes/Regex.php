@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2020, Ni Irrty
+ * @copyright  © 2017-2021, Ni Irrty
  * @package    Niirrty\Routing\Routes
  * @since      2017-11-04
- * @version    0.3.0
+ * @version    0.4.0
  */
 
 
@@ -14,14 +14,7 @@ declare( strict_types=1 );
 namespace Niirrty\Routing\Routes;
 
 
-use Closure;
-use InvalidArgumentException;
-use Niirrty\Routing\UrlPathLocator\ILocator;
-use function array_keys;
-use function array_reverse;
-use function count;
-use function is_callable;
-use function preg_match;
+use \Niirrty\Routing\UrlPathLocator\ILocator;
 
 
 /**
@@ -91,68 +84,54 @@ class Regex implements IRoute
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –
+
+    private array $_handlerIndexesReversed;
+
+    private ?array $_matches;
+
+    #endregion
 
 
-    /**
-     * The regular expression that must match the checked path.
-     *
-     * @type string
-     */
-    protected $_regex;
-
-    /**
-     * All handlers
-     *
-     * @type Closure[]
-     */
-    protected $_handlers;
-
-    private   $_handlerIndexesReversed;
-
-    private   $_matches;
-
-    // </editor-fold>
-
-
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Regex constructor.
      *
-     * @param string     $regex
-     * @param Closure[] $handlers
+     * @param string    $regex    The regular expression that must match the checked path.
+     * @param \Closure[] $handlers All handlers
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
-    public function __construct( string $regex, array $handlers )
+    public function __construct( protected string $regex, protected array $handlers )
     {
 
-        if ( !$this->testRegularExpression( $regex ) )
+        if ( ! $this->testRegularExpression( $regex ) )
         {
-            throw new InvalidArgumentException( 'Invalid regular expression passed to the regex route.' );
+            throw new \InvalidArgumentException( 'Invalid regular expression passed to the regex route.' );
         }
 
-        $this->_regex = $regex;
-        $this->_handlers = [];
+        $hs = [];
 
         foreach ( $handlers as $handler )
         {
-            if ( null !== $handler && !is_callable( $handler ) )
+            if ( null === $handler || ! \is_callable( $handler ) )
             {
                 continue;
             }
-            $this->_handlers[] = $handler;
+            $hs[] = $handler;
         }
+
+        $this->handlers = $hs;
 
         $this->assignHandlerIndexes();
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Calls the route with defined URL path locator URL.
@@ -164,7 +143,7 @@ class Regex implements IRoute
     public function call( ILocator $locator ): bool
     {
 
-        if ( !$this->matches( $locator ) )
+        if ( ! $this->matches( $locator ) )
         {
             return false;
         }
@@ -178,12 +157,12 @@ class Regex implements IRoute
 
         if ( 0 === $lastHandlerIndex )
         {
-            $this->_handlers[ 0 ]( $this->_matches );
+            $this->handlers[ 0 ]( $this->_matches );
 
             return true;
         }
 
-        while ( !isset( $this->_matches[ $lastHandlerIndex ] ) )
+        while ( ! isset( $this->_matches[ $lastHandlerIndex ] ) )
         {
 
             if ( 1 > $lastHandlerIndex )
@@ -200,14 +179,14 @@ class Regex implements IRoute
 
             if ( 0 === $lastHandlerIndex )
             {
-                $this->_handlers[ 0 ]( $this->_matches );
+                $this->handlers[ 0 ]( $this->_matches );
 
                 return true;
             }
 
         }
 
-        $this->_handlers[ 0 ]( $this->_matches[ $lastHandlerIndex ] );
+        $this->handlers[ 0 ]( $this->_matches[ $lastHandlerIndex ] );
 
         return true;
 
@@ -223,10 +202,9 @@ class Regex implements IRoute
     public function matches( ILocator $locator ): bool
     {
 
-        if ( preg_match( $this->_regex, $locator->getPath(), $matches ) )
+        if ( \preg_match( $this->regex, $locator->getPath(), $matches ) )
         {
             $this->_matches = $matches;
-
             return true;
         }
 
@@ -239,22 +217,22 @@ class Regex implements IRoute
     /**
      * Sets a handler for specific index. If no index is defined the handler is assigned to the end.
      *
-     * @param Closure|null $handler
+     * @param \Closure|null $handler
      * @param int|null      $index
      *
      * @return Regex
      */
-    public function setHandler( Closure $handler = null, ?int $index = null ): Regex
+    public function setHandler( ?\Closure $handler = null, ?int $index = null ): Regex
     {
 
-        $handlerCount = count( $this->_handlers );
+        $handlerCount = \count( $this->handlers );
 
         if ( null === $index )
         {
 
             if ( 1 > $handlerCount )
             {
-                $this->_handlers[] = $handler;
+                $this->handlers[] = $handler;
                 $this->assignHandlerIndexes();
 
                 return $this;
@@ -264,7 +242,7 @@ class Regex implements IRoute
 
         }
 
-        $this->_handlers[ $index ] = $handler;
+        $this->handlers[ $index ] = $handler;
 
         $this->assignHandlerIndexes();
 
@@ -272,10 +250,10 @@ class Regex implements IRoute
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   M E T H O D S   – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P R O T E C T E D   M E T H O D S   – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Checks if the defined regex is a valid, usable regex.
@@ -284,32 +262,33 @@ class Regex implements IRoute
      *
      * @return bool
      */
-    protected function testRegularExpression( $regex ): bool
+    protected function testRegularExpression( string $regex ): bool
     {
 
-        return false !== @preg_match( $regex, 'foo' );
+        try { return false !== @\preg_match( $regex, 'foo' ); }
+        catch ( \Throwable ) { return false; }
 
     }
 
-    protected function assignHandlerIndexes()
+    protected function assignHandlerIndexes() : void
     {
 
-        $this->_handlerIndexesReversed = array_reverse( array_keys( $this->_handlers ) );
+        $this->_handlerIndexesReversed = \array_reverse( \array_keys( $this->handlers ) );
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P R I V A T E   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P R I V A T E   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – –
 
     private function _findLastHandler( ?int $startIndex = null ): int
     {
 
-        for ( $i = 0, $c = count( $this->_handlerIndexesReversed ); $i < $c; $i++ )
+        for ( $i = 0, $c = \count( $this->_handlerIndexesReversed ); $i < $c; $i++ )
         {
 
-            if ( !isset( $this->_handlers[ $i ] ) )
+            if ( ! isset( $this->handlers[ $i ] ) )
             {
                 continue;
             }
@@ -326,7 +305,7 @@ class Regex implements IRoute
     }
 
 
-    // </editor-fold>
+    #endregion
 
 
 }

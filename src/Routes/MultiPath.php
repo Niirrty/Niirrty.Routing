@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2020, Ni Irrty
+ * @copyright  © 2017-2021, Ni Irrty
  * @package    Niirrty\Routing\Routes
  * @since      2017-11-04
- * @version    0.3.0
+ * @version    0.4.0
  */
 
 
@@ -14,10 +14,7 @@ declare( strict_types=1 );
 namespace Niirrty\Routing\Routes;
 
 
-use Closure;
-use Niirrty\Routing\UrlPathLocator\ILocator;
-use function in_array;
-use function trim;
+use \Niirrty\Routing\UrlPathLocator\ILocator;
 
 
 /**
@@ -29,27 +26,7 @@ class MultiPath implements IRoute
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
-
-    /**
-     * The paths strings that must match the URL path
-     *
-     * @type array
-     */
-    protected $_paths;
-
-    /**
-     * The closure that handles the route if it matches
-     *
-     * @type Closure
-     */
-    protected $_handler;
-
-    // </editor-fold>
-
-
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Simple route constructor.
@@ -57,30 +34,31 @@ class MultiPath implements IRoute
      * The handler callback must accept at least one parameter (ILocator instance) and must return TRUE on success,
      * FALSE otherwise.
      *
-     * @param array    $paths
-     * @param Closure $handler
+     * @param array    $paths   The paths strings that must match the URL path
+     * @param \Closure $handler The closure that handles the route if it matches
      */
-    public function __construct( array $paths, Closure $handler )
+    public function __construct( protected array $paths, protected \Closure $handler )
     {
 
-        $this->_paths = [];
+        $ps = [];
+
         foreach ( $paths as $path )
         {
             if ( null === $path )
             {
                 continue;
             }
-            $this->_paths[] = '/' . trim( $path, "\r\n\t /" );
+            $ps[] = '/' . \trim( $path, "\r\n\t /" );
         }
 
-        $this->_handler = $handler;
+        $this->paths = $ps;
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Calls the route with defined URL path locator URL.
@@ -92,12 +70,12 @@ class MultiPath implements IRoute
     public function call( ILocator $locator ): bool
     {
 
-        if ( !$this->matches( $locator ) )
+        if ( ! $this->matches( $locator ) )
         {
             return false;
         }
 
-        return ( $this->_handler )( $locator );
+        return ( $this->handler )( $locator );
 
     }
 
@@ -111,12 +89,11 @@ class MultiPath implements IRoute
     public function matches( ILocator $locator ): bool
     {
 
-        return in_array( $locator->getPath(), $this->_paths, true );
+        return \in_array( $locator->getPath(), $this->paths, true );
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

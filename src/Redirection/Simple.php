@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2020, Ni Irrty
+ * @copyright  © 2017-2021, Ni Irrty
  * @package    Niirrty\Routing\Redirection
  * @since      2017-11-04
- * @version    0.3.0
+ * @version    0.4.0
  */
 
 
@@ -14,9 +14,7 @@ declare( strict_types=1 );
 namespace Niirrty\Routing\Redirection;
 
 
-use Closure;
-use Niirrty\Routing\UrlPathLocator\ILocator;
-use function trim;
+use \Niirrty\Routing\UrlPathLocator\ILocator;
 
 
 /**
@@ -26,46 +24,25 @@ class Simple implements IRedirection
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
-
-    /**
-     * The path that must match for trigger a redirection
-     *
-     * @type string
-     */
-    protected $_path;
-
-    /**
-     * The closure that handles the redirection if it matches
-     *
-     * @type Closure
-     */
-    protected $_handler;
-
-    // </editor-fold>
-
-
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Simple redirection constructor.
      *
-     * @param string   $path
-     * @param Closure $handler
+     * @param string   $path    The path that must match for trigger a redirection
+     * @param \Closure $handler The \Closure that handles the redirection if it matches
      */
-    public function __construct( string $path, Closure $handler )
+    public function __construct( protected string $path, protected \Closure $handler )
     {
 
-        $this->_path = '/' . trim( $path, "\r\n\t /" );
-        $this->_handler = $handler;
+        $this->path = '/' . \trim( $this->path, "\r\n\t /" );
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Calls the route redirection with defined URL path locator URL.
@@ -80,7 +57,7 @@ class Simple implements IRedirection
         if ( $this->matches( $locator ) )
         {
 
-            ( $this->_handler )( $locator );
+            ( $this->handler )( $locator );
             exit;
 
         }
@@ -97,12 +74,11 @@ class Simple implements IRedirection
     public function matches( ILocator $locator ): bool
     {
 
-        return $locator->getPath() === $this->_path;
+        return $locator->getPath() === $this->path;
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

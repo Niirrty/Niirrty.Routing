@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2020, Ni Irrty
+ * @copyright  © 2017-2021, Ni Irrty
  * @package    Niirrty\Routing\Routes
  * @since      2017-11-04
- * @version    0.3.0
+ * @version    0.4.0
  */
 
 
@@ -14,12 +14,7 @@ declare( strict_types=1 );
 namespace Niirrty\Routing\Routes;
 
 
-use Closure;
-use Niirrty\Routing\UrlPathLocator\ILocator;
-use function count;
-use function is_array;
-use function is_callable;
-use function trim;
+use \Niirrty\Routing\UrlPathLocator\ILocator;
 
 
 /**
@@ -31,27 +26,7 @@ class Simple implements IRoute
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
-
-    /**
-     * The path string that must match the URL path
-     *
-     * @type string
-     */
-    protected $_path;
-
-    /**
-     * The closure that handles the route if it matches
-     *
-     * @type Closure
-     */
-    protected $_handler;
-
-    // </editor-fold>
-
-
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Simple route constructor.
@@ -59,21 +34,20 @@ class Simple implements IRoute
      * The handler callback must accept at least one parameter (ILocator instance) and must return TRUE on success,
      * FALSE otherwise.
      *
-     * @param string   $path
-     * @param Closure $handler
+     * @param string   $path    The path string that must match the URL path
+     * @param \Closure $handler The closure that handles the route if it matches
      */
-    public function __construct( string $path, Closure $handler )
+    public function __construct( protected string $path, protected \Closure $handler )
     {
 
-        $this->_path = '/' . trim( $path, "\r\n\t /" );
-        $this->_handler = $handler;
+        $this->path = '/' . trim( $path, "\r\n\t /" );
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Calls the route with defined URL path locator URL.
@@ -85,12 +59,12 @@ class Simple implements IRoute
     public function call( ILocator $locator ): bool
     {
 
-        if ( !$this->matches( $locator ) )
+        if ( ! $this->matches( $locator ) )
         {
             return false;
         }
 
-        return ( $this->_handler )( $locator );
+        return ( $this->handler )( $locator );
 
     }
 
@@ -104,14 +78,14 @@ class Simple implements IRoute
     public function matches( ILocator $locator ): bool
     {
 
-        return $locator->getPath() === $this->_path;
+        return $locator->getPath() === $this->path;
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   S T A T I C   M E T H O D S   – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   S T A T I C   M E T H O D S   – – – – – – – – – – – – – – – – –
 
     /**
      * Tries to parse the defined settings array to an Simple route instance
@@ -130,17 +104,17 @@ class Simple implements IRoute
      *
      * @return bool
      */
-    public static function TryParse( $settings, Simple &$routeOut = null ): bool
+    public static function TryParse( $settings, ?Simple &$routeOut = null ): bool
     {
 
-        if ( !is_array( $settings ) || 2 !== count( $settings ) )
+        if ( ! \is_array( $settings ) || 2 !== \count( $settings ) )
         {
             return false;
         }
 
         if ( isset( $settings[ 0 ], $settings[ 1 ] ) )
         {
-            if ( !is_callable( $settings[ 1 ] ) )
+            if ( ! \is_callable( $settings[ 1 ] ) )
             {
                 return false;
             }
@@ -149,7 +123,7 @@ class Simple implements IRoute
             return true;
         }
 
-        if ( isset( $settings[ 'path' ], $settings[ 'handler' ] ) && is_callable( $settings[ 'handler' ] ) )
+        if ( isset( $settings[ 'path' ], $settings[ 'handler' ] ) && \is_callable( $settings[ 'handler' ] ) )
         {
             $routeOut = new Simple( $settings[ 'path' ], $settings[ 'handler' ] );
 
@@ -160,8 +134,7 @@ class Simple implements IRoute
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

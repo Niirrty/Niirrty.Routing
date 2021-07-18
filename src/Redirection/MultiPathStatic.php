@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2020, Ni Irrty
+ * @copyright  © 2017-2021, Ni Irrty
  * @package    Niirrty\Routing\Redirection
  * @since      2017-11-04
- * @version    0.3.0
+ * @version    0.4.0
  */
 
 
@@ -14,9 +14,7 @@ declare( strict_types=1 );
 namespace Niirrty\Routing\Redirection;
 
 
-use Niirrty\Routing\UrlPathLocator\ILocator;
-use function in_array;
-use function trim;
+use \Niirrty\Routing\UrlPathLocator\ILocator;
 
 
 /**
@@ -27,53 +25,45 @@ class MultiPathStatic implements IRedirection
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * The paths that must match for trigger a redirection
      *
      * @type array
      */
-    protected $_paths;
+    protected array $paths;
 
-    /**
-     * @type string
-     */
-    protected $_redirectionURL;
-
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Multi path static redirection constructor.
      *
-     * @param array  $paths
+     * @param array  $paths          The paths that must match for trigger a redirection
      * @param string $redirectionUrl
      */
-    public function __construct( array $paths, string $redirectionUrl )
+    public function __construct( array $paths, protected string $redirectionUrl )
     {
 
-        $this->_redirectionURL = $redirectionUrl;
-
-        $this->_paths = [];
+        $this->paths = [];
         foreach ( $paths as $path )
         {
             if ( null === $path )
             {
                 continue;
             }
-            $this->_paths[] = '/' . trim( $path, "\r\n\t /" );
+            $this->paths[] = '/' . \trim( $path, "\r\n\t /" );
         }
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Calls the route redirection with defined URL path locator URL.
@@ -88,7 +78,7 @@ class MultiPathStatic implements IRedirection
         if ( $this->matches( $locator ) )
         {
 
-            header( 'Location: ' . $this->_redirectionURL );
+            \header( 'Location: ' . $this->redirectionUrl );
             exit;
 
         }
@@ -105,12 +95,11 @@ class MultiPathStatic implements IRedirection
     public function matches( ILocator $locator ): bool
     {
 
-        return in_array( $locator->getPath(), $this->_paths, true );
+        return \in_array( $locator->getPath(), $this->paths, true );
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

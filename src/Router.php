@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2020, Ni Irrty
+ * @copyright  © 2017-2021, Ni Irrty
  * @package    Niirrty\Routing
  * @since      2017-11-04
- * @version    0.3.0
+ * @version    0.4.0
  */
 
 
@@ -14,19 +14,16 @@ declare( strict_types=1 );
 namespace Niirrty\Routing;
 
 
-use Closure;
-use InvalidArgumentException;
-use Niirrty\Routing\Redirection\IRedirection;
-use Niirrty\Routing\Redirection\MultiPath as MultiPathRedirection;
-use Niirrty\Routing\Redirection\MultiPathStatic as MultiPathStaticRedirection;
-use Niirrty\Routing\Redirection\Simple as SimpleRedirection;
-use Niirrty\Routing\Redirection\SimpleStatic as SimpleStaticRedirection;
-use Niirrty\Routing\Routes\IRoute;
-use Niirrty\Routing\Routes\MultiPath as MultiPathRoute;
-use Niirrty\Routing\Routes\Regex as RegexRoute;
-use Niirrty\Routing\Routes\Simple as SimpleRoute;
-use Niirrty\Routing\UrlPathLocator\ILocator;
-use Throwable;
+use \Niirrty\Routing\Redirection\IRedirection;
+use \Niirrty\Routing\Redirection\MultiPath as MultiPathRedirection;
+use \Niirrty\Routing\Redirection\MultiPathStatic as MultiPathStaticRedirection;
+use \Niirrty\Routing\Redirection\Simple as SimpleRedirection;
+use \Niirrty\Routing\Redirection\SimpleStatic as SimpleStaticRedirection;
+use \Niirrty\Routing\Routes\IRoute;
+use \Niirrty\Routing\Routes\MultiPath as MultiPathRoute;
+use \Niirrty\Routing\Routes\Regex as RegexRoute;
+use \Niirrty\Routing\Routes\Simple as SimpleRoute;
+use \Niirrty\Routing\UrlPathLocator\ILocator;
 
 
 /**
@@ -36,22 +33,21 @@ class Router implements IRouter
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –
 
     /** @type IRoute[] */
-    protected $_routes;
+    protected array $_routes;
 
     /** @type IRedirection[] */
-    protected $_redirections;
+    protected array $_redirections;
 
-    /** @type Closure */
-    protected $_fallbackHandler;
+    /** @type \Closure */
+    protected \Closure $_fallbackHandler;
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Router constructor. Init a empty router
@@ -59,21 +55,19 @@ class Router implements IRouter
     public function __construct()
     {
 
-        $this->_redirections = [];
-        $this->_routes = [];
+        $this->_redirections    = [];
+        $this->_routes          = [];
         $this->_fallbackHandler = function ( ILocator $locator )
         {
-
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new InvalidArgumentException( 'Unresolved routing URL path: ' . $locator->getPath() );
+            throw new \InvalidArgumentException( 'Unresolved routing URL path: ' . $locator->getPath() );
         };
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Adds a new route.
@@ -95,11 +89,11 @@ class Router implements IRouter
      * Adds a new {@see \Niirrty\Routing\Routes\Simple} route.
      *
      * @param string   $path
-     * @param Closure $handler
+     * @param \Closure $handler
      *
      * @return Router
      */
-    public function addSimpleRoute( string $path, Closure $handler ): Router
+    public function addSimpleRoute( string $path, \Closure $handler ): Router
     {
 
         $this->_routes[] = new SimpleRoute( $path, $handler );
@@ -112,11 +106,11 @@ class Router implements IRouter
      * Adds a new {@see \Niirrty\Routing\Routes\Simple} route.
      *
      * @param array    $paths
-     * @param Closure $handler
+     * @param \Closure $handler
      *
      * @return Router
      */
-    public function addMultiPathRoute( array $paths, Closure $handler ): Router
+    public function addMultiPathRoute( array $paths, \Closure $handler ): Router
     {
 
         $this->_routes[] = new MultiPathRoute( $paths, $handler );
@@ -129,20 +123,15 @@ class Router implements IRouter
      * Adds a new {@see \Niirrty\Routing\Routes\Regex} route.
      *
      * @param string     $regex
-     * @param Closure[] $handlers
+     * @param \Closure[] $handlers
      *
      * @return Router
      */
     public function addRegexRoute( string $regex, array $handlers ): Router
     {
 
-        try
-        {
-            $this->_routes[] = new RegexRoute( $regex, $handlers );
-        }
-        catch ( Throwable $ex )
-        {
-        }
+        try { $this->_routes[] = new RegexRoute( $regex, $handlers ); }
+        catch ( \Throwable ) { }
 
         return $this;
 
@@ -168,11 +157,11 @@ class Router implements IRouter
      * Adds a new {@see \Niirrty\Routing\Redirection\Simple} redirection.
      *
      * @param string   $path
-     * @param Closure $handler
+     * @param \Closure $handler
      *
      * @return Router
      */
-    public function addSimpleRedirection( string $path, Closure $handler ): Router
+    public function addSimpleRedirection( string $path, \Closure $handler ): Router
     {
 
         $this->_redirections[] = new SimpleRedirection( $path, $handler );
@@ -185,11 +174,11 @@ class Router implements IRouter
      * Adds a new {@see \Niirrty\Routing\Redirection\MultiPath} redirection.
      *
      * @param array    $paths
-     * @param Closure $handler
+     * @param \Closure $handler
      *
      * @return Router
      */
-    public function addMultiPathRedirection( array $paths, Closure $handler ): Router
+    public function addMultiPathRedirection( array $paths, \Closure $handler ): Router
     {
 
         $this->_redirections[] = new MultiPathRedirection( $paths, $handler );
@@ -237,11 +226,11 @@ class Router implements IRouter
      *
      * The assigned handler must accept a single parameter Frost\Service\UrlPathLocator\ILocator $locator
      *
-     * @param Closure $handler
+     * @param \Closure $handler
      *
      * @return Router
      */
-    public function setFallBackHandler( Closure $handler ): Router
+    public function setFallBackHandler( \Closure $handler ): Router
     {
 
         $this->_fallbackHandler = $handler;
@@ -281,10 +270,10 @@ class Router implements IRouter
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   S T A T I C   M E T H O D S   – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   S T A T I C   M E T H O D S   – – – – – – – – – – – – – – – – –
 
     /**
      * Static constructor for fluent usage.
@@ -298,8 +287,7 @@ class Router implements IRouter
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }
