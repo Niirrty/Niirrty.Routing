@@ -9,8 +9,8 @@ inside the `composer.json`:
 ```json
 {
    "require": {
-      "php": ">=8.0",
-      "niirrty/niirrty.routing": "~0.4"
+      "php": ">=8.1",
+      "niirrty/niirrty.routing": "~0.6"
    }
 }
 ```
@@ -45,38 +45,43 @@ $urlPathLocator = new RequestUriLocator();
 // Init the router and chain all required stuff
 $router = \Niirrty\Routing\Router::CreateInstance()
 
-   // Handling URL paths, not declared by a route
-   ->setFallBackHandler( function( ILocator $locator ) use( $twig )
-   {
-      // TODO: add code for handling URL paths, not declared by a route
-      echo 'Invalid request!';
-      exit;
-   } )
-
-   // Redirect all index calls to /
-   ->addMultiPathStaticRedirection(
-      [ '/app.php', '/index.html', '/start.php', '/start.html', '/home.php', '/start.html' ],
-      ''
-   )
-
-   ->addSimpleRoute( '/', function( ILocator $locator )
-   {
-      // TODO: show the home
-   } )
-
-   ->addRegexRoute(
-      '~^/services/([A-Za-z0-9_.:-]+)/?$~',
-      [
-         function( $matches )
-         {
-            // TOSO: $matches[ 1 ] defines the first part inside parenthesises, and so on
-            echo '<pre>';
-            print_r( $matches );
+    // Handling URL paths, not declared by a route
+    ->setFallBackHandler(
+        function( ILocator $locator ) use( $twig )
+        {
+            // TODO: add code for handling URL paths, not declared by a route
+            echo 'Invalid request!';
             exit;
-         }
-      ] )
+        } )
 
-   ->addSimpleRoute( '/impressum', function( ILocator $locator )
+    // Redirect all index calls to '/' (home call)
+    ->addMultiPathStaticRedirection(
+        [ '/app.php', '/index.html', '/start.php', '/start.html', '/home.php', '/start.html' ],
+        '' )
+
+    // Home call
+    ->addSimpleRoute(
+        '/',
+        function( ILocator $locator )
+        {
+            // TODO: show the home
+        } )
+
+    // handling '/services/*' calls
+    ->addRegexRoute(
+        '~^/services/([A-Za-z0-9_.:-]+)/?$~',
+        [
+            function( $matches )
+            {
+                // TODO: $matches[ 1 ] defines the first part inside parenthesis, and so on
+                echo '<pre>';
+                print_r( $matches );
+                exit;
+            }
+        ] )
+    
+    // add an simple route for showing the impressum
+    ->addSimpleRoute( '/impressum', function( ILocator $locator )
       {
          // TODO: show the impressum
       } );

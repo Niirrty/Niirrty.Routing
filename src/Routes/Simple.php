@@ -40,7 +40,7 @@ class Simple implements IRoute
     public function __construct( protected string $path, protected \Closure $handler )
     {
 
-        $this->path = '/' . trim( $path, "\r\n\t /" );
+        $this->path = '/' . \trim( $path, "\r\n\t /" );
 
     }
 

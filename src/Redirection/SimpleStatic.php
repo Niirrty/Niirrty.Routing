@@ -52,7 +52,7 @@ class SimpleStatic implements IRedirection
      *
      * @param ILocator $locator
      */
-    public function call( ILocator $locator )
+    public function call( ILocator $locator ) : void
     {
 
         if ( $this->matches( $locator ) )

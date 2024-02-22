@@ -29,7 +29,7 @@ class ArraySource extends Locator
      * @param array  $source
      * @param string $key
      */
-    public function __construct( private array $source, private string $key )
+    public function __construct( private readonly array $source, private readonly string $key )
     {
 
         parent::__construct();
