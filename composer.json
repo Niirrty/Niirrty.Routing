@@ -1,6 +1,7 @@
 {
    "name": "niirrty/niirrty.routing",
    "type": "library",
+   "version": "0.6.4",
    "description": "A PHP routing library.",
    "license": "MIT",
    "authors": [
@@ -10,7 +11,7 @@
       }
    ],
    "require": {
-      "php": ">=8.1"
+      "php": ">=8.4"
    },
    "autoload": {
       "psr-4": {

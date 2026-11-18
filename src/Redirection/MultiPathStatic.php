@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2021, Ni Irrty
+ * @copyright  © 2017-2026, Ni Irrty
  * @package    Niirrty\Routing\Redirection
  * @since      2017-11-04
- * @version    0.4.0
+ * @version    0.6.4
  */
 
 
@@ -30,7 +30,7 @@ class MultiPathStatic implements IRedirection
     /**
      * The paths that must match for trigger a redirection
      *
-     * @type array
+     * @var array
      */
     protected array $paths;
 

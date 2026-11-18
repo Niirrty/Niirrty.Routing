@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2021, Ni Irrty
+ * @copyright  © 2017-2026, Ni Irrty
  * @package    Niirrty\Routing\Routes
  * @since      2017-11-04
- * @version    0.4.0
+ * @version    0.6.4
  */
 
 
@@ -59,7 +59,7 @@ class Simple implements IRoute
     public function call( ILocator $locator ): bool
     {
 
-        if ( ! $this->matches( $locator ) )
+        if ( false === $this->matches( $locator ) )
         {
             return false;
         }
@@ -99,22 +99,21 @@ class Simple implements IRoute
      * [ 'path' => '/', 'handler' => function( ILocator $urlLocator ) { … } ]
      * </code>
      *
-     * @param                                            $settings
-     * @param Simple|null                                $routeOut
-     *
+     * @param array       $settings
+     * @param Simple|null $routeOut
      * @return bool
      */
-    public static function TryParse( $settings, ?Simple &$routeOut = null ): bool
+    public static function TryParse( array $settings, ?Simple &$routeOut = null ): bool
     {
 
-        if ( ! \is_array( $settings ) || 2 !== \count( $settings ) )
+        if ( 2 !== \count( $settings ) )
         {
             return false;
         }
 
         if ( isset( $settings[ 0 ], $settings[ 1 ] ) )
         {
-            if ( ! \is_callable( $settings[ 1 ] ) )
+            if ( false === \is_callable( $settings[ 1 ] ) )
             {
                 return false;
             }

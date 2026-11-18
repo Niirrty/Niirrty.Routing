@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2021, Ni Irrty
+ * @copyright  © 2017-2026, Ni Irrty
  * @package    Niirrty\Routing\Routes
  * @since      2017-11-04
- * @version    0.4.0
+ * @version    0.6.4
  */
 
 
@@ -115,7 +115,7 @@ class Regex implements IRoute
 
         foreach ( $handlers as $handler )
         {
-            if ( null === $handler || ! \is_callable( $handler ) )
+            if ( \is_null( $handler ) || false === \is_callable( $handler ) )
             {
                 continue;
             }
@@ -143,7 +143,7 @@ class Regex implements IRoute
     public function call( ILocator $locator ): bool
     {
 
-        if ( ! $this->matches( $locator ) )
+        if ( false === $this->matches( $locator ) )
         {
             return false;
         }
@@ -162,7 +162,7 @@ class Regex implements IRoute
             return true;
         }
 
-        while ( ! isset( $this->_matches[ $lastHandlerIndex ] ) )
+        while ( false === isset( $this->_matches[ $lastHandlerIndex ] ) )
         {
 
             if ( 1 > $lastHandlerIndex )
@@ -288,7 +288,7 @@ class Regex implements IRoute
         for ( $i = 0, $c = \count( $this->_handlerIndexesReversed ); $i < $c; $i++ )
         {
 
-            if ( ! isset( $this->handlers[ $i ] ) )
+            if ( false === isset( $this->handlers[ $i ] ) )
             {
                 continue;
             }
@@ -303,7 +303,6 @@ class Regex implements IRoute
         return -1;
 
     }
-
 
     #endregion
 

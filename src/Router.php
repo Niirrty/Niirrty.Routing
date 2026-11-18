@@ -1,10 +1,10 @@
 <?php
 /**
  * @author     Ni Irrty <niirrty+code@gmail.com>
- * @copyright  © 2017-2021, Ni Irrty
+ * @copyright  © 2017-2026, Ni Irrty
  * @package    Niirrty\Routing
  * @since      2017-11-04
- * @version    0.4.0
+ * @version    0.6.4
  */
 
 
@@ -35,13 +35,13 @@ class Router implements IRouter
 
     #region // – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –
 
-    /** @type IRoute[] */
+    /** @var IRoute[] */
     protected array $_routes;
 
-    /** @type IRedirection[] */
+    /** @var IRedirection[] */
     protected array $_redirections;
 
-    /** @type \Closure */
+    /** @var \Closure */
     protected \Closure $_fallbackHandler;
 
     #endregion
